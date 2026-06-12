@@ -4,9 +4,9 @@ This document captures key architectural decisions, API discoveries, and design 
 
 ## Project Preferences
 
-- **Versioning:** Major version numbers only (1, 2, 3...). No semver.
-- **Git commits:** Atomic commits. Each commit should be one logical change.
-- **Code style:** Keep it short, simple, easy to read. Prefer DRY but don't over-abstract. Three similar lines is better than a premature abstraction.
+- **Versioning:** Semantic versioning. The `manifest.json` version is set automatically from the release tag by `release.yml` — do not bump it manually.
+- **Git commits:** Atomic commits. Each commit should be one logical change. No `Co-Authored-By`.
+- **Code style:** Keep it short, simple, easy to read. Prefer DRY but don't over-abstract. Three similar lines is better than a premature abstraction. Formatting and linting via ruff only.
 - **No manufacturer attribution:** The device info should not claim Anthropic wrote this integration. They provide the API; the maintainer maintains the code.
 
 ## Project Origin

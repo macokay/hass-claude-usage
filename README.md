@@ -2,7 +2,7 @@
 
 A custom Home Assistant integration that monitors your Claude (Anthropic) subscription usage.
 
-![Claude Usage Screenshot](screenshot.jpg)
+![Claude Usage Screenshot](images/screenshot.jpg)
 
 ## Sensors
 
@@ -73,15 +73,14 @@ pip install pre-commit
 pre-commit install
 ```
 
-This will run black, isort, ruff, and other checks before each commit.
+This will run ruff (lint + format) and other checks before each commit.
 
 ### Manual Formatting
 
 ```bash
-pip install black isort ruff
-black custom_components/hass_claude_usage/
-isort custom_components/hass_claude_usage/
-ruff check --fix custom_components/hass_claude_usage/
+pip install ruff
+ruff check --fix .
+ruff format .
 ```
 
 ## License
