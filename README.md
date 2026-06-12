@@ -12,7 +12,7 @@
     <img src="https://img.shields.io/github/v/release/macokay/hass-claude-usage" alt="GitHub release" />
   </a>
   <a href="https://github.com/macokay/hass-claude-usage/blob/main/LICENSE">
-    <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License" />
+    <img src="https://img.shields.io/badge/License-Non--Commercial-blue.svg" alt="License" />
   </a>
 </p>
 
@@ -130,4 +130,4 @@ A pre-built dashboard YAML is included in `dashboards/claude_usage.yaml`.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+&copy; 2026 Mac O Kay. Free to use and modify for personal, non-commercial use. Attribution appreciated if you share or build upon this work. Commercial use is not permitted.
