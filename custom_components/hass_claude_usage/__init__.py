@@ -92,7 +92,7 @@ class ClaudeUsageCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 raise ConfigEntryAuthFailed("Authentication failed - token may be invalid")
             resp.raise_for_status()
             raw = await resp.json()
-        except aiohttp.ClientError as err:
+        except (aiohttp.ClientError, ValueError) as err:
             raise UpdateFailed(f"Error fetching usage data: {err}") from err
 
         return _parse_usage(raw)
@@ -124,7 +124,7 @@ class ClaudeUsageCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             if not resp.ok:
                 raise ConfigEntryAuthFailed(f"Token refresh failed ({resp.status})")
             token_data = await resp.json()
-        except aiohttp.ClientError as err:
+        except (aiohttp.ClientError, ValueError) as err:
             raise UpdateFailed(f"Token refresh request failed: {err}") from err
 
         if "access_token" not in token_data:

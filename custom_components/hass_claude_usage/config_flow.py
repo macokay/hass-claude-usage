@@ -136,9 +136,10 @@ class ClaudeUsageConfigFlow(ConfigFlow, domain=DOMAIN):
         auth_code = code_parts[0]
         state = code_parts[1] if len(code_parts) > 1 else ""
 
-        # Validate state parameter to prevent CSRF
-        if state and self._state and state != self._state:
-            _LOGGER.error("OAuth state mismatch - possible CSRF attack")
+        # Validate state parameter to prevent CSRF. The callback always returns
+        # the code as "code#state", so a missing or mismatched state is rejected.
+        if self._state and state != self._state:
+            _LOGGER.error("OAuth state mismatch or missing - possible CSRF attack")
             return None
 
         payload = {
@@ -166,7 +167,7 @@ class ClaudeUsageConfigFlow(ConfigFlow, domain=DOMAIN):
                 _LOGGER.error("Token exchange response missing access_token")
                 return None
             return token_data
-        except aiohttp.ClientError:
+        except (aiohttp.ClientError, ValueError):
             _LOGGER.exception("Token exchange request failed")
             return None
 
@@ -201,7 +202,7 @@ class ClaudeUsageConfigFlow(ConfigFlow, domain=DOMAIN):
                 subscription_level = "Pro"
 
             return account_name, subscription_level
-        except (aiohttp.ClientError, KeyError):
+        except (aiohttp.ClientError, KeyError, ValueError):
             _LOGGER.exception("Error fetching account info")
             return None, None
 
