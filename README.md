@@ -1,88 +1,137 @@
-# Claude Usage - Home Assistant Integration
+<p align="center">
+  <img src="custom_components/hass_claude_usage/brand/icon.png" alt="Claude Usage" width="120" />
+</p>
 
-A custom Home Assistant integration that monitors your Claude (Anthropic) subscription usage.
+<h1 align="center">Claude Usage</h1>
 
-![Claude Usage Screenshot](images/screenshot.jpg)
+<p align="center">
+  Home Assistant integration that monitors your Claude (Anthropic) subscription usage.
+</p>
 
-## Sensors
+<p align="center">
+  <a href="https://github.com/hacs/integration">
+    <img src="https://img.shields.io/badge/HACS-Custom-orange.svg" alt="HACS Custom" />
+  </a>
+  <a href="https://github.com/macokay/hass-claude-usage/releases">
+    <img src="https://img.shields.io/github/v/release/macokay/hass-claude-usage" alt="GitHub release" />
+  </a>
+  <a href="https://github.com/macokay/hass-claude-usage/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License" />
+  </a>
+</p>
 
-- **Session Usage** - Current 5-hour session utilization (%)
-- **Session Reset Time** - When the session limit resets
-- **Week Usage** - Current 7-day utilization, all models (%)
-- **Weekly Reset Time** - When the weekly limit resets
-- **Weekly Sonnet Usage** - Current 7-day Sonnet utilization (%)
-- **Weekly Sonnet Reset Time** - When the Sonnet weekly limit resets
-- **Extra Usage Enabled** - Whether extra usage is enabled
-- **Extra Usage** - Extra usage utilization (%)
-- **Extra Usage Credits** - Credits consumed this month
-- **Extra Usage Limit** - Monthly credit limit
+<p align="center">
+  <img src="images/screenshot.jpg" alt="Claude Usage screenshot" width="100%" />
+</p>
+
+<p align="center">
+  <a href="https://www.buymeacoffee.com/macokay">
+    <img src="https://img.shields.io/badge/Buy%20Me%20A%20Coffee-%23FFDD00.svg?logo=buy-me-a-coffee&logoColor=black" alt="Buy Me A Coffee" />
+  </a>
+</p>
+
+---
+
+## Features
+
+- Session usage — current 5-hour utilization (%)
+- Weekly usage — 7-day utilization across all models (%)
+- Weekly Sonnet usage — 7-day Sonnet-specific utilization (%)
+- Usage pace — whether you're on track to stay within your weekly limit
+- Extra usage — credits consumed and monthly limit
+- All reset times as timestamp sensors
+- Auto token refresh — no manual re-authentication needed
+
+---
+
+## Requirements
+
+| Requirement | Details |
+|---|---|
+| Home Assistant | 2024.11.0 or newer |
+| Claude subscription | Pro or Max plan |
+
+---
 
 ## Installation
 
-### HACS (recommended)
+### Automatic — via HACS
 
-1. Add this repository as a custom repository in HACS
-2. Restart Home Assistant
-3. Install "Claude Usage"
-4. Go to Settings → Devices & Services → Add Integration → "Claude Usage"
-5. Follow the instructions
+1. Open **HACS** in Home Assistant.
+2. Go to **Integrations** → three-dot menu (⋮) → **Custom repositories**.
+3. Add `https://github.com/macokay/hass-claude-usage` as **Integration**.
+4. Search for **Claude Usage** and click **Download**.
+5. Restart Home Assistant.
 
 ### Manual
 
-1. Copy `custom_components/hass_claude_usage/` to your HA `custom_components/` directory
-2. Restart Home Assistant
-3. Add the integration via the UI
+1. Download the latest release from [GitHub Releases](https://github.com/macokay/hass-claude-usage/releases).
+2. Copy `custom_components/hass_claude_usage/` to your `config/custom_components/` directory.
+3. Restart Home Assistant.
 
-## Setup
+---
 
-The integration uses Anthropic's OAuth flow:
+## Configuration
 
-1. When adding the integration, you'll be shown an authorization URL
-2. Open the URL in your browser and log in to your Anthropic account
-3. After authorizing, you'll be redirected to a page with an authorization code
-4. Copy the code and paste it into the Home Assistant config flow
+1. Go to **Settings → Devices & Services → Add Integration**.
+2. Search for **Claude Usage**.
+3. Open the authorization URL shown in the config flow, log in with your Anthropic account, and paste the authorization code.
 
-## Options
+| Option | Description | Default |
+|---|---|---|
+| Update interval | How often to poll the usage API (seconds) | 300 |
 
-- **Update interval** - How often to poll the usage API (default: 300 seconds, min: 60, max: 3600).
+---
+
+## Data
+
+### Entities
+
+| Entity | Unit | Description |
+|---|---|---|
+| `sensor.session_usage` | `%` | 5-hour session utilization |
+| `sensor.session_reset_time` | timestamp | When the session resets |
+| `sensor.week_usage` | `%` | 7-day utilization, all models |
+| `sensor.week_usage_pace` | `%` | Usage relative to time elapsed in the week |
+| `sensor.week_reset_time` | timestamp | When the weekly limit resets |
+| `sensor.weekly_sonnet_usage` | `%` | 7-day Sonnet utilization |
+| `sensor.weekly_sonnet_reset_time` | timestamp | When the Sonnet weekly limit resets |
+| `sensor.extra_usage_enabled` | — | Whether extra usage is enabled |
+| `sensor.extra_usage` | `%` | Extra usage utilization |
+| `sensor.extra_usage_credits` | credits | Credits consumed this month |
+| `sensor.extra_usage_limit` | credits | Monthly credit limit |
+| `sensor.api_error` | errors | 1 if the last API call failed, 0 otherwise |
+
+### Update interval
+
+Data is fetched on the configured interval (default 300 s). Anthropic rate-limits the usage API — bursting dozens of requests in a minute results in a ~24 hour backoff. Keep the default.
+
+---
 
 ## Dashboard
 
-A pre-built dashboard is included in the `dashboards/` directory. To use it:
+A pre-built dashboard YAML is included in `dashboards/claude_usage.yaml`.
 
-1. Go to Settings → Dashboards → Add Dashboard
-2. Click the three-dot menu → "Edit Dashboard"
-3. Click the three-dot menu again → "Raw configuration editor"
-4. Copy the contents of `dashboards/claude_usage.yaml` and paste it
-5. Click "Save"
+1. Go to **Settings → Dashboards → Add Dashboard**.
+2. Open the three-dot menu → **Edit Dashboard** → three-dot menu → **Raw configuration editor**.
+3. Paste the contents of `dashboards/claude_usage.yaml` and save.
 
-Alternatively, you can manually add the cards to any existing dashboard by referencing the YAML file.
+---
 
-## Rate Limit
+## Known Limitations
 
-I have found Anthropic rate limits the usage API when you hit it too fast; usually a couple of dozen bursts in a minute is enough. The backoff time is around 24 hours, during which you won't be able to see your usage here, in Claude Code, or on https://claude.ai.  I recommend keeping the polling frequency at 300 :)
+- The OAuth scope is fixed by Anthropic's client and grants more than read-only access. Tokens are stored in Home Assistant's `.storage` in clear text (HA standard) — treat HA backups as secrets.
+- The usage API endpoint is undocumented and may change without notice.
 
-## Development
+---
 
-### Pre-commit Hook
+## Credits
 
-Install the pre-commit hook to automatically format code before committing:
+- [trickv/hass-claude-usage](https://github.com/trickv/hass-claude-usage) — original integration this fork is based on
+- [Anthropic](https://anthropic.com) — API provider
 
-```bash
-pip install pre-commit
-pre-commit install
-```
-
-This will run ruff (lint + format) and other checks before each commit.
-
-### Manual Formatting
-
-```bash
-pip install ruff
-ruff check --fix .
-ruff format .
-```
+---
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) file for details.
+MIT — see [LICENSE](LICENSE).
