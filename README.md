@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="custom_components/hass_claude_usage/brand/icon.png" alt="Claude Usage" width="120" />
-</p>
-
 <h1 align="center">Claude Usage</h1>
 
 <p align="center">
